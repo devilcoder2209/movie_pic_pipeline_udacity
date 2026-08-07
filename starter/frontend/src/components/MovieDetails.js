@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
-function MovieDetail({ movie }) {
+function MovieDetail({ movie, onClose }) {
   const [details, setDetails] = useState(null);
+
   useEffect(() => {
     axios.get(`${process.env.REACT_APP_MOVIE_API_URL}/movies/${movie.id}`).then((response) => {
       setDetails(response.data);
@@ -10,9 +11,17 @@ function MovieDetail({ movie }) {
   }, [movie]);
 
   return (
-    <div className="movie-details-card">
-      <h2>{details?.movie.title}</h2>
-      <p>{details?.movie.description}</p>
+    <div className="modal-overlay" onClick={onClose}>
+      <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+        <button className="close-button" onClick={onClose}>
+          ✕
+        </button>
+        <div className="modal-poster-placeholder">{/* In a real app, this would be an img tag */}</div>
+        <div className="modal-text-content">
+          <h2 className="modal-title">{details?.movie?.title || 'Loading...'}</h2>
+          <p className="movie-details-text">{details?.movie?.description || 'Loading details...'}</p>
+        </div>
+      </div>
     </div>
   );
 }

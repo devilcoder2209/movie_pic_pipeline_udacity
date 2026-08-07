@@ -14,7 +14,7 @@ test('renders movie titles', async () => {
   axios.get.mockResolvedValueOnce({ data: { movies: mockMovies } });
 
   const onMovieClick = jest.fn();
-  render(<MovieList onMovieClick={onMovieClick} />);
+  render(<MovieList onMovieClick={onMovieClick} search="" />);
 
   const movie1 = await screen.findByText(/Movie 1/);
   const movie2 = await screen.findByText(/Movie 2/);
@@ -27,7 +27,7 @@ test('calls onMovieClick when movie is clicked', async () => {
   axios.get.mockResolvedValueOnce({ data: { movies: mockMovies } });
 
   const onMovieClick = jest.fn();
-  render(<MovieList onMovieClick={onMovieClick} />);
+  render(<MovieList onMovieClick={onMovieClick} search="" />);
 
   const movie1 = await screen.findByText(/Movie 1/);
 
