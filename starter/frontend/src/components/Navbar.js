@@ -8,10 +8,10 @@ function Navbar({ search, onSearchChange, isDarkMode, toggleTheme }) {
 
       <div className="search-wrapper">
         <span className="search-icon">🔍</span>
-        <input 
-          type="text" 
-          className="search-input" 
-          placeholder="Titles, people, genres" 
+        <input
+          type="text"
+          className="search-input"
+          placeholder="Titles, people, genres"
           value={search}
           onChange={(e) => onSearchChange(e.target.value)}
         />
