@@ -1,5 +1,6 @@
 name: Backend Continuous Integration
 
+# This workflow runs automatically on every pull request to the main branch
 on:
   pull_request:
     branches: [ "main" ]
@@ -8,6 +9,7 @@ on:
   workflow_dispatch:
 
 jobs:
+  # The lint job checks the backend code for style and syntax issues using flake8
   lint:
     name: Lint Backend
     runs-on: ubuntu-latest
@@ -17,10 +19,13 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+      
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.10'
+      
+      # Caching pipenv virtual environments speeds up consecutive runs
       - name: Cache pipenv virtualenvs
         uses: actions/cache@v3
         with:
@@ -28,13 +33,17 @@ jobs:
           key: ${{ runner.os }}-pipenv-${{ hashFiles('starter/backend/Pipfile.lock') }}
           restore-keys: |
             ${{ runner.os }}-pipenv-
+      
       - name: Install dependencies
         run: |
           pip install pipenv
           pipenv install
+      
+      # Running the linter to catch any syntax errors
       - name: Run Linter
         run: pipenv run lint
 
+  # The test job runs our backend unit tests to ensure API endpoints work correctly
   test:
     name: Test Backend
     runs-on: ubuntu-latest
@@ -44,10 +53,12 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+      
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.10'
+      
       - name: Cache pipenv virtualenvs
         uses: actions/cache@v3
         with:
@@ -55,15 +66,20 @@ jobs:
           key: ${{ runner.os }}-pipenv-${{ hashFiles('starter/backend/Pipfile.lock') }}
           restore-keys: |
             ${{ runner.os }}-pipenv-
+      
       - name: Install dependencies
         run: |
           pip install pipenv
           pipenv install
+      
+      # Run backend tests
       - name: Run Tests
         run: pipenv run test
 
+  # The build job verifies that the Flask application can be successfully containerized
   build:
     name: Build Backend
+    # Use the 'needs' directive to ensure this job only runs AFTER linting and testing succeed
     needs: [lint, test]
     runs-on: ubuntu-latest
     defaults:
@@ -72,10 +88,12 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+      
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.10'
+      
       - name: Cache pipenv virtualenvs
         uses: actions/cache@v3
         with:
@@ -83,9 +101,12 @@ jobs:
           key: ${{ runner.os }}-pipenv-${{ hashFiles('starter/backend/Pipfile.lock') }}
           restore-keys: |
             ${{ runner.os }}-pipenv-
+      
       - name: Install dependencies
         run: |
           pip install pipenv
           pipenv install
+      
+      # Build the Docker image
       - name: Build Docker image
         run: docker build -t backend-app .

@@ -1,5 +1,6 @@
 name: Frontend Continuous Deployment
 
+# Automatically trigger deployment when code is merged or pushed to main
 on:
   push:
     branches: [ "main" ]
@@ -8,6 +9,7 @@ on:
   workflow_dispatch:
 
 jobs:
+  # The lint job checks the frontend code for style and syntax issues
   lint:
     name: Lint Frontend
     runs-on: ubuntu-latest
@@ -17,10 +19,13 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+      
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
+      
+      # Use caching to speed up pipeline execution times
       - name: Cache node modules
         uses: actions/cache@v3
         with:
@@ -28,11 +33,15 @@ jobs:
           key: ${{ runner.os }}-node-${{ hashFiles('starter/frontend/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-node-
+      
       - name: Install dependencies
         run: npm ci
+      
+      # Run linter (must pass to proceed)
       - name: Run Linter
         run: npm run lint
 
+  # The test job runs frontend tests to verify application functionality
   test:
     name: Test Frontend
     runs-on: ubuntu-latest
@@ -42,10 +51,12 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+      
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
+      
       - name: Cache node modules
         uses: actions/cache@v3
         with:
@@ -53,13 +64,18 @@ jobs:
           key: ${{ runner.os }}-node-${{ hashFiles('starter/frontend/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-node-
+      
       - name: Install dependencies
         run: npm ci
+      
+      # Run tests (must pass to proceed)
       - name: Run Tests
         run: CI=true npm test
 
+  # This job builds the Docker image and deploys it to the EKS cluster
   build-and-deploy:
     name: Build, Push, and Deploy
+    # This 'needs' directive guarantees that the docker image is only built AFTER linting and testing complete successfully
     needs: [lint, test]
     runs-on: ubuntu-latest
     defaults:
@@ -69,6 +85,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      # Log into AWS securely using Github Secrets so no credentials are hardcoded in the pipeline
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
@@ -76,10 +93,12 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
 
+      # Uses a 3rd party action to log into ECR
       - name: Login to Amazon ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
 
+      # Builds the docker image using build-args for the REACT_APP_MOVIE_API_URL and pushes it to ECR
       - name: Build, tag, and push image to Amazon ECR
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
@@ -90,19 +109,19 @@ jobs:
           docker build --build-arg REACT_APP_MOVIE_API_URL="$REACT_APP_MOVIE_API_URL" -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
 
+      # Decodes the KUBE_CONFIG_DATA secret so kubectl can authenticate with the EKS cluster
       - name: Set up kubecfg
         run: |
           mkdir -p ~/.kube
           echo "${{ secrets.KUBE_CONFIG_DATA }}" | base64 --decode > ~/.kube/config
         
+      # Deploys the application using kubectl and kustomize to set the new image tag
       - name: Deploy to EKS
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           ECR_REPOSITORY: frontend
           IMAGE_TAG: ${{ github.sha }}
         run: |
-          # Use envsubst or kustomize depending on available files. Let's just use kubectl set image or apply
-          # Assuming simple deployment.yaml in k8s/ directory
           cd k8s
           kustomize edit set image frontend=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           kustomize build | kubectl apply -f -
