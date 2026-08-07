@@ -37,7 +37,7 @@ jobs:
       - name: Install dependencies
         run: |
           pip install pipenv
-          pipenv install
+          pipenv install --dev
       
       # Run linter (must pass to proceed)
       - name: Run Linter
@@ -70,7 +70,7 @@ jobs:
       - name: Install dependencies
         run: |
           pip install pipenv
-          pipenv install
+          pipenv install --dev
       
       # Run tests (must pass to proceed)
       - name: Run Tests

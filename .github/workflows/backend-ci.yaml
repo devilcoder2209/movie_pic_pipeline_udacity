@@ -37,7 +37,7 @@ jobs:
       - name: Install dependencies
         run: |
           pip install pipenv
-          pipenv install
+          pipenv install --dev
       
       # Running the linter to catch any syntax errors
       - name: Run Linter
@@ -70,7 +70,7 @@ jobs:
       - name: Install dependencies
         run: |
           pip install pipenv
-          pipenv install
+          pipenv install --dev
       
       # Run backend tests
       - name: Run Tests
@@ -105,7 +105,7 @@ jobs:
       - name: Install dependencies
         run: |
           pip install pipenv
-          pipenv install
+          pipenv install --dev
       
       # Build the Docker image
       - name: Build Docker image
