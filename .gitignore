@@ -1,0 +1,19 @@
+# AI Assistant generated docs
+walkthrough.md
+implementation_plan.md
+task.md
+*.md
+explainer.md
+
+# Keep README
+!README.md
+
+# Terraform
+terraform.exe
+.terraform/
+*.tfstate
+*.tfstate.backup
+.terraform.tfstate.lock.info
+
+# Node
+node_modules/

@@ -1,7 +1,6 @@
-from flask import jsonify
+from flask import jsonify, abort
 from flask.views import MethodView
 
-# Dummy database to hold movie examples
 movies = {
     "123": {"title": "Top Gun: Maverick", "description": "Fighter planes"},
     "456": {"title": "Sonic the Hedgehog", "description": "Blue Sega character"},
@@ -12,8 +11,18 @@ movies = {
 class Movies(MethodView):
     def get(self, movie_id):
         if movie_id is None:
-            # Return a list of all movies
             return jsonify({"movies": [dict({"title": movie["title"]}, **{"id": i}) for i, movie in movies.items()]})
         else:
-            # Return the details of a specific movie
-            return jsonify({"movie": movies[str(movie_id)]})
+            str_id = str(movie_id)
+            if str_id not in movies:
+                abort(404, description="Movie not found")
+            return jsonify({"movie": movies[str_id]})
+            
+    def post(self):
+        abort(501, description="Method not implemented yet")
+        
+    def put(self, movie_id):
+        abort(501, description="Method not implemented yet")
+        
+    def delete(self, movie_id):
+        abort(501, description="Method not implemented yet")
