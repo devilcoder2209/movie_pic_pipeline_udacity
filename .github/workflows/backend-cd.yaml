@@ -27,7 +27,7 @@ jobs:
       
       # Use caching to speed up pipeline execution times
       - name: Cache pipenv virtualenvs
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ~/.local/share/virtualenvs
           key: ${{ runner.os }}-pipenv-v2-${{ hashFiles('starter/backend/Pipfile.lock') }}
@@ -36,7 +36,7 @@ jobs:
       
       - name: Install dependencies
         run: |
-          pip install pipenv
+          pip install pipenv flake8 pytest
           pipenv install --dev
       
       # Run linter (must pass to proceed)
@@ -60,7 +60,7 @@ jobs:
           python-version: '3.10'
       
       - name: Cache pipenv virtualenvs
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ~/.local/share/virtualenvs
           key: ${{ runner.os }}-pipenv-v2-${{ hashFiles('starter/backend/Pipfile.lock') }}
@@ -69,7 +69,7 @@ jobs:
       
       - name: Install dependencies
         run: |
-          pip install pipenv
+          pip install pipenv flake8 pytest
           pipenv install --dev
       
       # Run tests (must pass to proceed)

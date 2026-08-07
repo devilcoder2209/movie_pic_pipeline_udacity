@@ -27,7 +27,7 @@ jobs:
       
       # Use caching to speed up pipeline execution times
       - name: Cache node modules
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ~/.npm
           key: ${{ runner.os }}-node-${{ hashFiles('starter/frontend/package-lock.json') }}
@@ -58,7 +58,7 @@ jobs:
           node-version: '20'
       
       - name: Cache node modules
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ~/.npm
           key: ${{ runner.os }}-node-${{ hashFiles('starter/frontend/package-lock.json') }}
