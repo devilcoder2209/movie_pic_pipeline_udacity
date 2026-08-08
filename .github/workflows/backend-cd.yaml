@@ -3,9 +3,9 @@ name: Backend Continuous Deployment
 # Automatically trigger deployment when code is merged or pushed to main
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
     paths:
-      - 'starter/backend/**'
+      - "starter/backend/**"
   workflow_dispatch:
 
 jobs:
@@ -19,12 +19,12 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      
+
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.10'
-      
+          python-version: "3.10"
+
       # Use caching to speed up pipeline execution times
       - name: Cache pipenv virtualenvs
         uses: actions/cache@v4
@@ -33,12 +33,12 @@ jobs:
           key: ${{ runner.os }}-pipenv-v2-${{ hashFiles('starter/backend/Pipfile.lock') }}
           restore-keys: |
             ${{ runner.os }}-pipenv-v2-
-      
+
       - name: Install dependencies
         run: |
           pip install pipenv flake8 pytest
           pipenv install --dev
-      
+
       # Run linter (must pass to proceed)
       - name: Run Linter
         run: pipenv run lint
@@ -53,12 +53,12 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      
+
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.10'
-      
+          python-version: "3.10"
+
       - name: Cache pipenv virtualenvs
         uses: actions/cache@v4
         with:
@@ -66,12 +66,12 @@ jobs:
           key: ${{ runner.os }}-pipenv-v2-${{ hashFiles('starter/backend/Pipfile.lock') }}
           restore-keys: |
             ${{ runner.os }}-pipenv-v2-
-      
+
       - name: Install dependencies
         run: |
           pip install pipenv flake8 pytest
           pipenv install --dev
-      
+
       # Run tests (must pass to proceed)
       - name: Run Tests
         run: pipenv run test
@@ -118,7 +118,7 @@ jobs:
         run: |
           mkdir -p ~/.kube
           echo "${{ secrets.KUBE_CONFIG_DATA }}" | base64 --decode > ~/.kube/config
-        
+
       # Deploys the application using kubectl and kustomize to set the new image tag
       - name: Deploy to EKS
         env:

@@ -8,7 +8,7 @@ function MovieList({ onMovieClick, search }) {
 
   useEffect(() => {
     axios
-      .get(`${process.env.REACT_APP_MOVIE_API_URL}/movies`)
+      .get(`${process.env.REACT_APP_MOVIE_API_URL || 'http://127.0.0.1:5000'}/movies`)
       .then((response) => {
         setMovies(response.data?.movies || []);
         setLoading(false);
