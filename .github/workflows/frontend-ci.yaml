@@ -2,14 +2,11 @@ name: Frontend Continuous Integration
 
 # This workflow runs automatically on every pull request to the main branch
 on:
-  push:
-    branches:
-      - main
   pull_request:
     branches:
       - main
     paths:
-      - 'starter/frontend/**'
+      - "starter/frontend/**"
   workflow_dispatch: {}
 
 jobs:
@@ -23,12 +20,12 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
-      
+          node-version: "20"
+
       # Caching node modules speeds up the build process by reusing previously downloaded dependencies
       - name: Cache node modules
         uses: actions/cache@v4
@@ -37,10 +34,10 @@ jobs:
           key: ${{ runner.os }}-node-${{ hashFiles('starter/frontend/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-node-
-      
+
       - name: Install dependencies
         run: npm ci
-      
+
       # Running the linter to catch any syntax errors
       - name: Run Linter
         run: npm run lint
@@ -55,12 +52,12 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
-      
+          node-version: "20"
+
       - name: Cache node modules
         uses: actions/cache@v4
         with:
@@ -68,10 +65,10 @@ jobs:
           key: ${{ runner.os }}-node-${{ hashFiles('starter/frontend/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-node-
-      
+
       - name: Install dependencies
         run: npm ci
-      
+
       # Run tests in non-interactive mode using CI=true
       - name: Run Tests
         run: CI=true npm run test
@@ -88,12 +85,12 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
-      
+          node-version: "20"
+
       - name: Cache node modules
         uses: actions/cache@v4
         with:
@@ -101,14 +98,14 @@ jobs:
           key: ${{ runner.os }}-node-${{ hashFiles('starter/frontend/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-node-
-      
+
       - name: Install dependencies
         run: npm ci
-      
+
       # Rubric requires running tests again in the build step just to be safe
       - name: Run Tests
         run: CI=true npm run test
-      
+
       # Build the Docker image with the required build arguments
       - name: Build Docker image
         env:
