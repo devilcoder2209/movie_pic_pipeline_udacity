@@ -2,14 +2,11 @@ name: Backend Continuous Integration
 
 # This workflow runs automatically on every pull request to the main branch
 on:
-  push:
-    branches:
-      - main
   pull_request:
     branches:
       - main
     paths:
-      - 'starter/backend/**'
+      - "starter/backend/**"
   workflow_dispatch: {}
 
 jobs:
@@ -23,12 +20,12 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      
+
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.10'
-      
+          python-version: "3.10"
+
       # Caching pipenv virtual environments speeds up consecutive runs
       - name: Cache pipenv virtualenvs
         uses: actions/cache@v4
@@ -37,12 +34,12 @@ jobs:
           key: ${{ runner.os }}-pipenv-v2-${{ hashFiles('starter/backend/Pipfile.lock') }}
           restore-keys: |
             ${{ runner.os }}-pipenv-v2-
-      
+
       - name: Install dependencies
         run: |
           pip install pipenv flake8 pytest
           pipenv install --dev
-      
+
       # Running the linter to catch any syntax errors
       - name: Run Linter
         run: pipenv run lint
@@ -57,12 +54,12 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      
+
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.10'
-      
+          python-version: "3.10"
+
       - name: Cache pipenv virtualenvs
         uses: actions/cache@v4
         with:
@@ -70,12 +67,12 @@ jobs:
           key: ${{ runner.os }}-pipenv-v2-${{ hashFiles('starter/backend/Pipfile.lock') }}
           restore-keys: |
             ${{ runner.os }}-pipenv-v2-
-      
+
       - name: Install dependencies
         run: |
           pip install pipenv flake8 pytest
           pipenv install --dev
-      
+
       # Run backend tests
       - name: Run Tests
         run: pipenv run test
@@ -92,12 +89,12 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      
+
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.10'
-      
+          python-version: "3.10"
+
       - name: Cache pipenv virtualenvs
         uses: actions/cache@v4
         with:
@@ -105,12 +102,12 @@ jobs:
           key: ${{ runner.os }}-pipenv-v2-${{ hashFiles('starter/backend/Pipfile.lock') }}
           restore-keys: |
             ${{ runner.os }}-pipenv-v2-
-      
+
       - name: Install dependencies
         run: |
           pip install pipenv flake8 pytest
           pipenv install --dev
-      
+
       # Build the Docker image
       - name: Build Docker image
         run: docker build -t backend-app .
