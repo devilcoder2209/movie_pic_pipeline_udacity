@@ -3,12 +3,14 @@ name: Frontend Continuous Integration
 # This workflow runs automatically on every pull request to the main branch
 on:
   push:
-    branches: [ "main" ]
+    branches:
+      - main
   pull_request:
-    branches: [ "main" ]
+    branches:
+      - main
     paths:
       - 'starter/frontend/**'
-  workflow_dispatch:
+  workflow_dispatch: {}
 
 jobs:
   # The lint job checks the frontend code for style and syntax issues

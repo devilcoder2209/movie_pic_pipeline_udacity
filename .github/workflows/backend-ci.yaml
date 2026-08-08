@@ -3,12 +3,14 @@ name: Backend Continuous Integration
 # This workflow runs automatically on every pull request to the main branch
 on:
   push:
-    branches: [ "main" ]
+    branches:
+      - main
   pull_request:
-    branches: [ "main" ]
+    branches:
+      - main
     paths:
       - 'starter/backend/**'
-  workflow_dispatch:
+  workflow_dispatch: {}
 
 jobs:
   # The lint job checks the backend code for style and syntax issues using flake8
